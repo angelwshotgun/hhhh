@@ -3,10 +3,10 @@ import requests
 import json
 from waitress import serve
 from flask_cors import CORS
-
+import os
 
 # Replace with your actual API key
-API_KEY = "AIzaSyBkK6TPvo7jlcLzlX37-ZJa8ONP0yns2RM"
+API_KEY = os.getenv("GEMINI_API_KEY")
 
 app = Flask(__name__)
 cors = CORS(app)
