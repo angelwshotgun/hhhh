@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import os
@@ -17,6 +18,7 @@ if api_key is None:
 genai.configure(api_key=api_key)
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def serve_frontend():
