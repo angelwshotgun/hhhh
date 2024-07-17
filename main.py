@@ -1,64 +1,47 @@
-from flask import Flask, request, jsonify
-import requests
-import json
-from waitress import serve
-from flask_cors import CORS
+from flask import Flask, request, jsonify, send_from_directory
+import google.generativeai as genai
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import os
+from dotenv import load_dotenv
+import PIL.Image
+import io
+from waitress import serve
 
-# Replace with your actual Gemini API key (not Google Cloud Platform key)
-API_KEY = os.getenv("GEMINI_API_KEY")
+# Load environment variables from .env file
+load_dotenv()
+
+# Configure the API key
+api_key = os.getenv('API_KEY')
+if api_key is None:
+    raise ValueError("No API key found in environment variables.")
+
+genai.configure(api_key=api_key)
 
 app = Flask(__name__)
-cors = CORS(app)
 
-@app.route("/api/check-connection", methods=["GET"])
-def check_api_connection():
-    try:
-        response = requests.get("https://api.gemoni.ai/")
-        response.raise_for_status()  # Raise an exception if the status code is not 200
-        return jsonify({"status": "success", "message": "Connected to Gemini API"})
-    except requests.exceptions.RequestException as e:
-        print(f"API Connection Error: {e}")
-        return jsonify({"status": "error", "message": "Failed to connect to Gemini API"})
+@app.route('/')
+def serve_frontend():
+    return send_from_directory(os.getcwd(), 'index.html')
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "GET":
-        try:
-            with open("index.html", "r") as f:
-                html = f.read()
-            return html
-        except FileNotFoundError:
-            return jsonify({"error": "index.html not found"}), 500
-
-    elif request.method == "POST":
-        if "image" not in request.files:
-            return jsonify({"error": "Missing image file"}), 400
-
-        image_file = request.files["image"]
-        image_data = image_file.read()
-
-        headers = {"Authorization": f"Bearer {API_KEY}",
-                   "Content-Type": "application/octet-stream"}
-        try:
-            response = requests.post(
-                "https://api.gemini.ai/v1/vision/pro/text", headers=headers, data=image_data
-            )
-            response.raise_for_status()  # Raise an exception for non-200 status codes
-
-            response_data = json.loads(response.content.decode('utf-8'))
-            text_blocks = response_data['text_blocks']
-            extracted_text = ""
-            for block in text_blocks:
-                extracted_text += block['text'] + "\n"
-
-            return jsonify({"success": True, "text": extracted_text})
-        except requests.exceptions.RequestException as e:
-            print(f"API Error: {e}")
-            return jsonify({"error": "Failed to extract text"}), 500
-        except Exception as e:  # Catch generic exceptions for broader error handling
-            print(f"Unexpected Error: {e}")
-            return jsonify({"error": "Internal server error"}), 500
-
-if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=5000)
+@app.route('/generate_text', methods=['POST'])
+def generate_text():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image file provided'}), 400
+    
+    image_file = request.files['image']
+    image = PIL.Image.open(io.BytesIO(image_file.read()))
+    
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    
+    response = model.generate_content(["read information in format: ID:, country: ISO 3166-1 alpha-3, name:, gender:, date of birth: dd/mm/yyyy", image], stream=True,
+                                      safety_settings={
+        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE
+    })
+    response.resolve()
+    
+    return jsonify({'generated_text': response.text})
+if __name__ == '__main__':
+    app.run(debug=True, port=int(os.environ.get('PORT', 8000)))
