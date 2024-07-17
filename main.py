@@ -5,7 +5,6 @@ import os
 from dotenv import load_dotenv
 import PIL.Image
 import io
-from waitress import serve
 
 # Load environment variables from .env file
 load_dotenv()
