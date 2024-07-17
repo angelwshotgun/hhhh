@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, render_template
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import os
@@ -19,8 +19,8 @@ genai.configure(api_key=api_key)
 app = Flask(__name__)
 
 @app.route('/')
-def serve_frontend():
-    return send_from_directory(os.getcwd(), 'index.html')
+def index():
+    return render_template('index.html')
 
 @app.route('/generate_text', methods=['POST'])
 def generate_text():
@@ -32,12 +32,10 @@ def generate_text():
     
     model = genai.GenerativeModel('gemini-1.5-flash')
     
-    response = model.generate_content(["read information in format: ID:, country: ISO 3166-1 alpha-3, name:, gender:, date of birth: dd/mm/yyyy", image], stream=True,
+    response = model.generate_content(["bạn đọc được những gì", image], stream=True,
                                       safety_settings={
         HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
-        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
-        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
-        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE
+        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.block,
     })
     response.resolve()
     
