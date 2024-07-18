@@ -34,7 +34,7 @@ def generate_text():
     
     model = genai.GenerativeModel('gemini-1.5-flash')
     
-    response = model.generate_content(["read text in format: ID:, Country: ISO 3166-1 alpha-3, Name:, Gender:, Date of Birth: dd/mm/yyyy", image], stream=True,
+    response = model.generate_content([" đọc ảnh và chỉ gửi kết quả id, country dưới dạng mã code 3 chữ số, fullname, giới tính, ngày sinh dưới dạng dd/mm/yyyy, địa chỉ thường trú", image], stream=True,
                                       safety_settings={
         HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
@@ -42,7 +42,7 @@ def generate_text():
         HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE
     })
     response.resolve()
-    
-    return jsonify({'generated_text': response.text})
+    print(response.text)
+    return response.text
 if __name__ == '__main__':
     app.run(debug=True)
