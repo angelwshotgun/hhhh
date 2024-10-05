@@ -34,7 +34,7 @@ def generate_text():
     
     model = genai.GenerativeModel('gemini-1.5-flash')
     
-    response = model.generate_content([" đọc ảnh và chỉ gửi kết quả số passport, country dưới dạng mã code 3 chữ số, fullname, giới tính, ngày sinh dưới dạng dd/mm/yyyy, địa chỉ thường trú", image], stream=True,
+    response = model.generate_content([" read text from image and return result passport no, country code 3 digit, fullname, gender, ngày sinh dưới dạng dd/mm/yyyy, địa chỉ thường trú", image], stream=True,
                                       safety_settings={
         HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
