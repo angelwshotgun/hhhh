@@ -44,9 +44,8 @@ def generate_text():
     })
     response.resolve()
     data = json.loads(response.text)
-
-    for value in data.values():
-        print(value)
-    return value
+    result_text = '\n'.join(data.values())
+    print(result_text)
+    return result_text
 if __name__ == '__main__':
     app.run(debug=True)
