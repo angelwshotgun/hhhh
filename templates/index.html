@@ -76,11 +76,11 @@
                 var jsonString = response.replace(/^```json\s*/, '').replace(/\s*```$/, '');
                 var data = JSON.parse(jsonString);
                 var resultHtml = 
-                    (data.id || '') + '\n' +
-                    (data.country || '') + '\n' +
+                    (data.passport_no || '') + '\n' +
+                    (data.country_code || '') + '\n' +
                     (data.fullname || '') + '\n' +
                     (data.gender || '') + '\n' +
-                    (data.birthdate || '');
+                    (data.dob || '');
                 
                 if (data.country === 'VNM') {
                     resultHtml += '\n' + (data.address || '');
