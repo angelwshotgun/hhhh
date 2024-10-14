@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 import PIL.Image
 import io
+import json
 
 # Load environment variables from .env file
 load_dotenv()
@@ -42,9 +43,9 @@ def generate_text():
         HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE
     })
     response.resolve()
-    lines = response.text.strip().split('\n')
-    for line in lines:
-        value = line.split(': ', 1)[1]
+    data = json.loads(response.text)
+
+    for value in data.values():
         print(value)
     return value
 if __name__ == '__main__':
