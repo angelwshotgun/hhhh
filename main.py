@@ -67,13 +67,15 @@ def generate_text2():
         system_instruction="""Result only
 My requirements are:
 
-ID: get from header after booking number
-the number day booking CLD if room booked is Classic Double Room, CLP if Classic Premium Room, STU if Studio Room, TRIP if Triple Room, (dd - dd/mm)
-NET: Calculate the number of nights between check-in and check-out dates. Then, divide the total net price by the number of nights to get the daily net price. Format the result as follows: Perform the division without rounding. Do not include any currency symbols. Use a period (.) as the thousands separator
-Add '(Prepaid)' at the end
+ID: Extract the booking number from the "From" header in parentheses.
+the number day booking CLD if room booked is Classic Double Room, CLP if Classic Premium Room, STU if Studio Room, TRIP if Triple Room, Format: (dd - dd/mm)
+NET: Calculate the number of nights between the check-in and check-out dates.
+Divide the total net price by the number of nights and then by the number of rooms booked.
+Format the result as follows: no rounding, no currency symbols, and use a period (.) as the thousands separator.
+Append "(Prepaid)" at the end.
 
-Tên: uppercase name
-Total net: is total net
+Tên: Provide the name in uppercase.
+Total net: Display the total net amount
 example
 ID: 1234567890
 1 CLP (02 - 04/12)
