@@ -34,7 +34,7 @@ def generate_text():
     
     model = genai.GenerativeModel('gemini-1.5-flash')
     
-    response = model.generate_content([" read text from image and return result passport no, country code 3 digit, fullname, gender, ngày sinh dưới dạng dd/mm/yyyy, địa chỉ thường trú", image], stream=True,
+    response = model.generate_content([" result only passport no, country code 3 digit, fullname, gender, dob dd/mm/yyyy, address", image], stream=True,
                                       safety_settings={
         HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
@@ -42,7 +42,10 @@ def generate_text():
         HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE
     })
     response.resolve()
-    print(response.text)
-    return response.text
+    lines = response.text.strip().split('\n')
+    for line in lines:
+        value = line.split(': ', 1)[1]
+        print(value)
+    return value
 if __name__ == '__main__':
     app.run(debug=True)
