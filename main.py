@@ -44,18 +44,6 @@ def generate_text():
         "response_mime_type": "application/json"
     })
     response.resolve()
-    data_str = response.text.strip('{}')  # Bỏ dấu ngoặc nhọn
-
-    # Tách các cặp key-value
-    pairs = data_str.split(', ')
-    data = {}
-
-    for pair in pairs:
-        key, value = pair.split(': ', 1)  # Tách tại dấu ": " đầu tiên
-        data[key.strip('"')] = value.strip('"')  # Bỏ dấu ngoặc kép
-
-    # Nối các giá trị thành một chuỗi
-    result_text = '\n'.join(data.values())
-    return result_text
+    return response.text
 if __name__ == '__main__':
     app.run(debug=True)
