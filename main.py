@@ -11,7 +11,7 @@ import io
 load_dotenv()
 
 # Configure the API key
-api_key = os.getenv('API_KEY')
+api_key = os.getenv('GEMINI_API_KEY')
 if api_key is None:
     raise ValueError("No API key found in environment variables.")
 
@@ -34,7 +34,7 @@ def generate_text():
     
     model = genai.GenerativeModel('gemini-1.5-flash')
     
-    response = model.generate_content(["result only passport no, country code 3 digit if vietnamese or 84 return VNM, fullname: Identify and distinguish between last name, middle name(s), and first name.Note capitalization and punctuation in names. After reading, provide the full name in the format: Last Name Middle Name(s) First Name., gender: F/M, dob: dd/mm/yyyy, address", image], stream=True,
+    response = model.generate_content(["result only passport no, country_code: Look for explicit nationality or country mentions in text form.Search for country flags or other national symbols.Check for location information that might suggest a country. Provide the corresponding ISO 3166-1 alpha-3 country code., fullname: Identify and distinguish between last name, middle name(s), and first name.Note capitalization and punctuation in names. After reading, provide the full name in the format: Last Name Middle Name(s) First Name., gender: F/M, dob: dd/mm/yyyy, address", image], stream=True,
                                       safety_settings={
         HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
