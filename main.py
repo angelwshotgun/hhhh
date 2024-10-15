@@ -34,13 +34,17 @@ def generate_text():
     
     model = genai.GenerativeModel('gemini-1.5-flash')
     
-    response = model.generate_content([" result only passport no, country code 3 digit, fullname, gender, dob dd/mm/yyyy, address", image], stream=True,
+    response = model.generate_content(["result only passport no, country code 3 digit if vietnamese or 84 return VNM, fullname: Identify and distinguish between last name, middle name(s), and first name.Note capitalization and punctuation in names. After reading, provide the full name in the format: Last Name Middle Name(s) First Name., gender: F/M, dob: dd/mm/yyyy, address", image], stream=True,
                                       safety_settings={
         HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
-        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE
+        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
     },generation_config = {
+        "temperature": 1,
+        "top_p": 0.95,
+        "top_k": 64,
+        "max_output_tokens": 8192,
         "response_mime_type": "application/json"
     })
     response.resolve()
