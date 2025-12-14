@@ -32,7 +32,7 @@ def generate_text():
     image_file = request.files['image']
     image = PIL.Image.open(io.BytesIO(image_file.read()))
     
-    model = genai.GenerativeModel('gemini-flash-latest')
+    model = genai.GenerativeModel('gemini-2.5-flash-image')
     
     response = model.generate_content(["result only passport no, country_code: Look for explicit nationality or country mentions in text form.Search for country flags or other national symbols.Check for location information that might suggest a country. Provide the corresponding ISO 3166-1 alpha-3 country code., fullname: Identify and distinguish between last name, middle name(s), and first name.Note capitalization and punctuation in names. After reading, provide the full name in the format: Last Name Middle Name(s) First Name., gender: F/M, dob: dd/mm/yyyy, address", image], stream=True,
                                       safety_settings={
@@ -111,5 +111,6 @@ Total net: 600.000"""
     
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
